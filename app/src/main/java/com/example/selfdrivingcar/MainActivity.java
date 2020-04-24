@@ -33,15 +33,19 @@ public class MainActivity extends AppCompatActivity {
 
     private Socket mSocket;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /* init */
         AnhXa();
 
-        /* init */
-        // bắt đầu chỗ listen envent đi setOnClickListener
+        viewStatus.setText("Status: ______");
+        viewStatus.setTextColor(Color.rgb(255,255,255));
+
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,13 +56,15 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnectedToNetwork(context))
                 {
                     Connect2Server();
-                    mSocket.emit("android-on",true);
+                    mSocket.emit("android-on","start");
                     viewStatus.setText("Status: Starting !");
                     viewStatus.setBackgroundColor(Color.rgb(0,200,0));
                 }
                 else
                 {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
+                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
             }
         });
@@ -72,12 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
                     Connect2Server();
-                    mSocket.emit("android-on", false);
+                    mSocket.emit("android-on", "stop");
                     viewStatus.setText("Status: Stopping !");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
+                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
                 }
 
@@ -102,10 +110,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
+                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
             }
         });
-
     }
     private void AnhXa()
     {
