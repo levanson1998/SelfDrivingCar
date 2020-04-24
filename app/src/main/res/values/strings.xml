@@ -9,4 +9,6 @@
     <string name="status">STATUS</string>
     <string name="time">time</string>
     <string name="sp">sp</string>
+    <string name="st">st</string>
+    <string name="txtstatus">status:</string>
 </resources>

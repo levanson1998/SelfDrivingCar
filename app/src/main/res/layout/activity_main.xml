@@ -85,7 +85,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="40dp"
-        android:text="@string/sp"
+        android:text="@string/speed"
         app:layout_constraintStart_toEndOf="@+id/nbspped"
         app:layout_constraintTop_toBottomOf="@+id/btnstop" />
 
@@ -110,19 +110,21 @@
         android:layout_marginLeft="120dp"
         android:layout_marginTop="44dp"
         android:background="#FFFFFF"
-        android:text="@string/status"
+        android:text="@string/txtstatus"
+        android:textAllCaps="true"
         android:textColor="#171414"
         app:layout_constraintStart_toEndOf="@+id/btnpicture"
         app:layout_constraintTop_toBottomOf="@+id/nbspped" />
 
     <TextView
-        android:id="@+id/txtkq"
+        android:id="@+id/txtviewstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="44dp"
         android:text="@string/status"
+        android:textAllCaps="false"
         app:layout_constraintStart_toEndOf="@+id/txtstatus"
         app:layout_constraintTop_toBottomOf="@+id/txtspeed" />
 
@@ -133,7 +135,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginLeft="56dp"
         android:layout_marginTop="24dp"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/showimage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnpicture"
         app:srcCompat="@drawable/hcmutlogo" />
