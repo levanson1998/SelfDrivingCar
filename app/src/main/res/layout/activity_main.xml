@@ -4,15 +4,148 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#9C27B0"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/txtheading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="28dp"
+        android:background="#0F00432E"
+        android:text="Self-Driving Car"
+        android:textAllCaps="true"
+        android:textColor="#003AFF"
+        android:textColorLink="#0088FF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnstart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="76dp"
+        android:background="#04A324"
+        android:text="start"
+        android:textColor="#005E0B"
+        android:textColorHint="#B52727"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnstop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="144dp"
+        android:layout_marginLeft="144dp"
+        android:layout_marginTop="16dp"
+        android:background="#FF0027"
+        android:text="stop"
+        android:textAllCaps="true"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/btnstart"
+        app:layout_constraintTop_toBottomOf="@+id/txtheading" />
+
+    <Switch
+        android:id="@+id/swspeed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="36dp"
+        android:text="slow-fast"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnstart" />
+
+    <TextView
+        android:id="@+id/nbspped"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="144dp"
+        android:layout_marginLeft="144dp"
+        android:layout_marginTop="40dp"
+        android:text="speed:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/swspeed"
+        app:layout_constraintTop_toBottomOf="@+id/btnstop" />
+
+    <TextView
+        android:id="@+id/txtspeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="40dp"
+        android:text="speed"
+        app:layout_constraintStart_toEndOf="@+id/nbspped"
+        app:layout_constraintTop_toBottomOf="@+id/btnstop" />
+
+    <Button
+        android:id="@+id/btnpicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="24dp"
+        android:text="getpicture"
+        android:textAllCaps="true"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swspeed" />
+
+    <TextView
+        android:id="@+id/txtstatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="44dp"
+        android:background="#FFFFFF"
+        android:text="STATUS:"
+        android:textColor="#171414"
+        app:layout_constraintStart_toEndOf="@+id/btnpicture"
+        app:layout_constraintTop_toBottomOf="@+id/nbspped" />
+
+    <TextView
+        android:id="@+id/txtkq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="44dp"
+        android:text="STATUS"
+        app:layout_constraintStart_toEndOf="@+id/txtstatus"
+        app:layout_constraintTop_toBottomOf="@+id/txtspeed" />
+
+    <ImageView
+        android:id="@+id/imgview"
+        android:layout_width="292dp"
+        android:layout_height="333dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnpicture"
+        app:srcCompat="@drawable/hcmutlogo" />
+
+    <TextView
+        android:id="@+id/txttime"
+        android:layout_width="139dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginLeft="132dp"
+        android:layout_marginTop="40dp"
+        android:text="time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
