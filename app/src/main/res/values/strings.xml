@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Self Driving Car</string>
+    <string name="start">start</string>
+    <string name="self_driving_car">Self-Driving Car</string>
+    <string name="stop">stop</string>
+    <string name="slow_fast">slow-fast</string>
+    <string name="speed">speed:</string>
+    <string name="getpicture">getpicture</string>
+    <string name="status">STATUS</string>
+    <string name="time">time</string>
+    <string name="sp">sp</string>
 </resources>

@@ -15,7 +15,7 @@
         android:layout_marginLeft="100dp"
         android:layout_marginTop="28dp"
         android:background="#0F00432E"
-        android:text="Self-Driving Car"
+        android:text="@string/self_driving_car"
         android:textAllCaps="true"
         android:textColor="#003AFF"
         android:textColorLink="#0088FF"
@@ -32,7 +32,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="76dp"
         android:background="#04A324"
-        android:text="start"
+        android:text="@string/start"
         android:textColor="#005E0B"
         android:textColorHint="#B52727"
         android:textSize="18sp"
@@ -48,7 +48,7 @@
         android:layout_marginLeft="144dp"
         android:layout_marginTop="16dp"
         android:background="#FF0027"
-        android:text="stop"
+        android:text="@string/stop"
         android:textAllCaps="true"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -62,7 +62,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="36dp"
-        android:text="slow-fast"
+        android:text="@string/slow_fast"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnstart" />
 
@@ -73,7 +73,7 @@
         android:layout_marginStart="144dp"
         android:layout_marginLeft="144dp"
         android:layout_marginTop="40dp"
-        android:text="speed:"
+        android:text="@string/speed"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/swspeed"
         app:layout_constraintTop_toBottomOf="@+id/btnstop" />
@@ -85,7 +85,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="40dp"
-        android:text="speed"
+        android:text="@string/sp"
         app:layout_constraintStart_toEndOf="@+id/nbspped"
         app:layout_constraintTop_toBottomOf="@+id/btnstop" />
 
@@ -96,7 +96,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="24dp"
-        android:text="getpicture"
+        android:text="@string/getpicture"
         android:textAllCaps="true"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
         android:layout_marginLeft="120dp"
         android:layout_marginTop="44dp"
         android:background="#FFFFFF"
-        android:text="STATUS:"
+        android:text="@string/status"
         android:textColor="#171414"
         app:layout_constraintStart_toEndOf="@+id/btnpicture"
         app:layout_constraintTop_toBottomOf="@+id/nbspped" />
@@ -122,7 +122,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="44dp"
-        android:text="STATUS"
+        android:text="@string/status"
         app:layout_constraintStart_toEndOf="@+id/txtstatus"
         app:layout_constraintTop_toBottomOf="@+id/txtspeed" />
 
@@ -133,6 +133,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginLeft="56dp"
         android:layout_marginTop="24dp"
+        android:contentDescription="@string/app_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnpicture"
         app:srcCompat="@drawable/hcmutlogo" />
@@ -144,7 +145,7 @@
         android:layout_marginStart="132dp"
         android:layout_marginLeft="132dp"
         android:layout_marginTop="40dp"
-        android:text="time"
+        android:text="@string/time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgview" />
 
