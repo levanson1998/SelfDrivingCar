@@ -11,4 +11,6 @@
     <string name="sp">sp</string>
     <string name="st">st</string>
     <string name="txtstatus">status:</string>
+    <string name="slow">SLOW</string>
+    <string name="fast">FAST</string>
 </resources>

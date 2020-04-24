@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C27B0"
+    android:background="#459848"
     tools:context=".MainActivity">
 
     <TextView
@@ -34,7 +34,7 @@
         android:background="#04A324"
         android:text="@string/start"
         android:textColor="#005E0B"
-        android:textColorHint="#B52727"
+        android:textColorHint="#AF0013"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,77 +55,46 @@
         app:layout_constraintStart_toEndOf="@+id/btnstart"
         app:layout_constraintTop_toBottomOf="@+id/txtheading" />
 
-    <Switch
-        android:id="@+id/swspeed"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="36dp"
-        android:text="@string/slow_fast"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnstart" />
-
-    <TextView
-        android:id="@+id/nbspped"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginLeft="144dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/speed"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/swspeed"
-        app:layout_constraintTop_toBottomOf="@+id/btnstop" />
-
     <TextView
         android:id="@+id/txtspeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginLeft="152dp"
+        android:layout_marginTop="32dp"
         android:text="@string/speed"
-        app:layout_constraintStart_toEndOf="@+id/nbspped"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/slowfast"
         app:layout_constraintTop_toBottomOf="@+id/btnstop" />
 
     <Button
         android:id="@+id/btnpicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="24dp"
         android:text="@string/getpicture"
         android:textAllCaps="true"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swspeed" />
-
-    <TextView
-        android:id="@+id/txtstatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginLeft="120dp"
-        android:layout_marginTop="44dp"
-        android:background="#FFFFFF"
-        android:text="@string/txtstatus"
-        android:textAllCaps="true"
-        android:textColor="#171414"
-        app:layout_constraintStart_toEndOf="@+id/btnpicture"
-        app:layout_constraintTop_toBottomOf="@+id/nbspped" />
+        app:layout_constraintTop_toBottomOf="@+id/slowfast" />
 
     <TextView
         android:id="@+id/txtviewstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginLeft="136dp"
+        android:layout_marginTop="48dp"
         android:text="@string/status"
         android:textAllCaps="false"
-        app:layout_constraintStart_toEndOf="@+id/txtstatus"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/btnpicture"
         app:layout_constraintTop_toBottomOf="@+id/txtspeed" />
 
     <ImageView
@@ -150,5 +119,18 @@
         android:text="@string/time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgview" />
+
+    <ToggleButton
+        android:id="@+id/slowfast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
+        android:text="ToggleButton"
+        android:textOff="@string/slow"
+        android:textOn="@string/fast"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnstart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
