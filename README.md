@@ -9,3 +9,6 @@ Giao diện app cho self Driving Car
 GIAO DIỆN MỚI HIHI
 ![giao diện mới](https://github.com/levanson1998/SelfDrivingCar/blob/master/image/screenshot1.png)
 
+update:
+file apk: SelfDrivingCar\app\build\outputs\apk\debug
+
