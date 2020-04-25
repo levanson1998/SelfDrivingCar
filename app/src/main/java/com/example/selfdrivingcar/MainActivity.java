@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         viewStatus.setText("Status: ______");
         viewStatus.setTextColor(Color.rgb(255,255,255));
+        viewImg.setVisibility(View.INVISIBLE);
+        viewTime.setVisibility(View.INVISIBLE);
 
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                     mSocket.emit("from-android", "stop");
                     viewStatus.setText("Status: Stopping !");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
+                    viewImg.setVisibility(View.INVISIBLE);
+                    viewTime.setVisibility(View.INVISIBLE);
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
@@ -215,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
                             case"Stop":
                                 viewStatus.setText("Status: Stopping");
                                 viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
+                                viewImg.setVisibility(View.INVISIBLE);
+                                viewTime.setVisibility(View.INVISIBLE);
                                 break;
                         }
                         viewSpeed.setText("Speed: "+speed);
