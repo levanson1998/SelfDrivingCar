@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
                     viewStatus.setText("Status: Disconnect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
+                    notifier();
                 }
             }
         });
@@ -192,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
         notification.setDefaults(Notification.DEFAULT_ALL);
         NotificationManager nm= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(uniqueID,notification.build());
-
     }
 /*
 
