@@ -1,6 +1,10 @@
 package com.example.selfdrivingcar;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Socket mSocket;
     private Handler customHandler = new Handler();
+    NotificationCompat.Builder notification;
+    private  static  final int uniqueID=12345;
 
 
 
@@ -56,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         viewStatus.setTextColor(Color.rgb(255,255,255));
         viewImg.setVisibility(View.INVISIBLE);
         viewTime.setVisibility(View.INVISIBLE);
+        notification=new NotificationCompat.Builder(this);
+        notification.setAutoCancel(true);
 
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +178,41 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void notifier(){
+        Intent intent=new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent=PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notification.setSmallIcon(R.drawable.ic_warning_black_24dp);
+        notification.setWhen(System.currentTimeMillis());
+        notification.setContentTitle("Self Driving Car Lost");
+        notification.setContentText("OMG I'm lost. Please find me!!!");
+        notification.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+        notification.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notification.setContentIntent(pendingIntent);
+        notification.setDefaults(Notification.DEFAULT_ALL);
+        NotificationManager nm= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(uniqueID,notification.build());
+
+    }
+/*
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+*/
+
     private void Connect2Server(){
         try {
             mSocket = IO.socket(url_heroku);
@@ -211,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                             case "Lost":
                                 viewStatus.setText("Status: Lost");
                                 viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
+                                notifier();
                                 break;
                             case "Run":
                                 viewStatus.setText("Status: Running");
