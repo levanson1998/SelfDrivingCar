@@ -1,10 +1,14 @@
 package com.example.selfdrivingcar;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,10 +19,14 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 //import java.net.Socket;
 
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     String url_heroku = "https://seft-drivingcar.herokuapp.com/";
 
     private Socket mSocket;
+    private Handler customHandler = new Handler();
 
 
 
@@ -56,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnectedToNetwork(context))
                 {
                     Connect2Server();
-                    mSocket.emit("android-on","start");
+                    mSocket.emit("from-android","start");
                     viewStatus.setText("Status: Starting !");
                     viewStatus.setBackgroundColor(Color.rgb(0,200,0));
                 }
@@ -78,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
                     Connect2Server();
-                    mSocket.emit("android-on", "stop");
+                    mSocket.emit("from-android", "stop");
                     viewStatus.setText("Status: Stopping !");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                 }
@@ -88,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
                 }
-
         });
 
         /*----WHEN PUSH ToggleButton SLOW-FAST----*/
@@ -99,14 +107,32 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnectedToNetwork(context)) {
                     if(setSpeed.isChecked()) {
                         Connect2Server();
-                        mSocket.emit("android-on", "speed_fast");
+                        mSocket.emit("from-android", "speed_fast");
                         Toast.makeText(MainActivity.this, "SPEED IS FAST", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Connect2Server();
-                        mSocket.emit("android-on", "speed_slow");
+                        mSocket.emit("from-android", "speed_slow");
                         Toast.makeText(MainActivity.this, "SPEED IS SLOW", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
+                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
+                }
+            }
+        });
+
+        /*WHEN PUSH GET PIC BUTTON*/
+        btnPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context= view.getContext();
+                if (isConnectedToNetwork((context))){
+                    Connect2Server();
+                    mSocket.emit("from-android", "getpic");
+                    mSocket.on("send-img", imgData);
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
@@ -128,11 +154,22 @@ public class MainActivity extends AppCompatActivity {
         setSpeed = findViewById(R.id.slowfast);
     }
 
+    /*----HANDLER FOR UPDATING----*/
+    private Runnable updateTimerThread = new Runnable() {
+        public void run() {
+            // statusData: [Lost, Stop, Running] - [speed]
+            mSocket.on("car-status",statusData);
+            mSocket.emit("from-android", "request-speed");
+//            mSocket.on("get-speed", speedData);
+            customHandler.postDelayed(this, 1000);
+        }
+    };
+
     private void Connect2Server(){
         try {
             mSocket = IO.socket(url_heroku);
             mSocket.connect();
-            Toast.makeText(this, "Connected to Server!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Connected to Server!", Toast.LENGTH_SHORT).show();
         } catch (URISyntaxException e) {
             Toast.makeText(this, "Server fails to start...", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -153,8 +190,73 @@ public class MainActivity extends AppCompatActivity {
         return isConnected;
     }
 
-    /*---SET SPEED SLOW-FAST*/
+    private Emitter.Listener statusData = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject object = (JSONObject)args[0];
+                    String statusCar;
+                    String speed;
+                    try{
+                        statusCar =object.getString("status");
+                        speed = object.getString("speed");
 
-}
+                        switch (statusCar){
+                            case "Lost":
+                                viewStatus.setText("Status: Lost");
+                                viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
+                                break;
+                            case "Run":
+                                viewStatus.setText("Status: Running");
+                                viewStatus.setBackgroundColor(Color.rgb(0, 200, 0));
+                                break;
+                            case"Stop":
+                                viewStatus.setText("Status: Stopping");
+                                viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
+                                break;
+                        }
+                        viewSpeed.setText("Speed: "+speed);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener imgData = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject object = (JSONObject) args[0];
+                    String img_text, captime;
+                    try {
+                        img_text = object.getString("Image");
+                        captime=object.getString("CapTime");
+                        viewTime.setText("Captured Time: " +captime);
+                        String encodedString=img_text.substring(img_text.indexOf(",")+1,img_text.length());
+                        byte[] decodedString = Base64.decode(encodedString, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        viewImg.setImageBitmap(decodedByte);
+
+                        viewImg.setVisibility(View.VISIBLE);
+                        viewTime.setVisibility(View.VISIBLE);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
+
+    }
+
 
 
