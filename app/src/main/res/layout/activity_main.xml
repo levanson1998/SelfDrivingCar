@@ -9,10 +9,8 @@
 
     <TextView
         android:id="@+id/txtheading"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginLeft="100dp"
         android:layout_marginTop="28dp"
         android:background="#0F00432E"
         android:text="@string/self_driving_car"
@@ -21,6 +19,7 @@
         android:textColorLink="#0088FF"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,18 +41,22 @@
 
     <Button
         android:id="@+id/btnstop"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="144dp"
         android:layout_marginLeft="144dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="51dp"
+        android:layout_marginRight="51dp"
         android:background="#FF0027"
         android:text="@string/stop"
         android:textAllCaps="true"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/btnstart"
-        app:layout_constraintTop_toBottomOf="@+id/txtheading" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtspeed"
@@ -61,11 +64,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="144dp"
         android:layout_marginLeft="144dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="28dp"
         android:text="@string/speed"
         android:textColor="#F1BF29"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/slowfast"
         app:layout_constraintTop_toBottomOf="@+id/btnstop" />
 
@@ -94,6 +99,8 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.013"
         app:layout_constraintStart_toEndOf="@+id/btnpicture"
         app:layout_constraintTop_toBottomOf="@+id/txtspeed" />
 
@@ -101,22 +108,20 @@
         android:id="@+id/imgview"
         android:layout_width="292dp"
         android:layout_height="333dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
         android:layout_marginTop="24dp"
         android:contentDescription="@string/showimage"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnpicture"
         app:srcCompat="@drawable/hcmutlogo" />
 
     <TextView
         android:id="@+id/txttime"
-        android:layout_width="139dp"
+        android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:layout_marginStart="132dp"
-        android:layout_marginLeft="132dp"
         android:layout_marginTop="40dp"
         android:text="@string/time"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgview" />
 
