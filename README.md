@@ -12,3 +12,6 @@ GIAO DIỆN MỚI HIHI
 update:
 file apk: SelfDrivingCar\app\build\outputs\apk\debug
 
+Khi có notification
+![notification](https://github.com/levanson1998/SelfDrivingCar/blob/master/image/notification.png)
+

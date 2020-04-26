@@ -1,18 +1,24 @@
 package com.example.selfdrivingcar;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -23,8 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import org.json.JSONException;
@@ -45,12 +53,22 @@ public class MainActivity extends AppCompatActivity {
     Switch swSpeed;
     ImageView viewImg;
     ToggleButton setSpeed;
-    String url_heroku = "https://seft-drivingcar.herokuapp.com/";
+//    String url_heroku = "https://seft-drivingcar.herokuapp.com/";
+//    String url_heroku = "http://localhost:8888/";
+    String url_heroku = "https://supercuteboy.herokuapp.com/";
 
     private Socket mSocket;
     private Handler customHandler = new Handler();
     NotificationCompat.Builder builder;
     private static final int ID_NOTIFICATION_BROADCAST = 607;
+    private final String channelID = "ChannelID_01";
+
+
+    // notify
+    private static final String CHANNEL_WHATEVER="channel_whatever";
+    private static final int NOTIFY_ID=1337;
+    private static final String GROUP_SAMPLE="sampleGroup";
+    private NotificationManagerCompat mgrCompat=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +77,23 @@ public class MainActivity extends AppCompatActivity {
         /* init */
         AnhXa();
 
+        /*START NOTIFY INIT*/
+        NotificationManager mgr=
+                (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O &&
+                mgr.getNotificationChannel(CHANNEL_WHATEVER)==null) {
+            mgr.createNotificationChannel(new NotificationChannel(CHANNEL_WHATEVER,
+                    "Whatever", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        mgrCompat=NotificationManagerCompat.from(this);
+        /*END NOTIFY */
+
         viewStatus.setText("Status: ______");
         viewStatus.setTextColor(Color.rgb(255,255,255));
         viewImg.setVisibility(View.INVISIBLE);
         viewTime.setVisibility(View.INVISIBLE);
-//        notification=new NotificationCompat.Builder(this);
-//        notification.setAutoCancel(true);
+
 
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
                     Connect2Server();
+//                    JSONObject obj = new JSONObject();
+//                    obj.put("request","stop");
                     mSocket.emit("from-android", "stop");
                     viewStatus.setText("Status: Stopping !");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
@@ -138,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*WHEN PUSH GET PIC BUTTON*/
         btnPic.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
                 Context context= view.getContext();
@@ -150,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
                     viewStatus.setText("Status: Disconnect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
-                    showNotification();
+                    showNotificationLost();
                 }
             }
         });
@@ -172,42 +204,16 @@ public class MainActivity extends AppCompatActivity {
     private Runnable updateTimerThread = new Runnable() {
         public void run() {
             // statusData: [Lost, Stop, Running] - [speed]
+            mSocket.emit("requestStatus");
             mSocket.on("car-status",statusData);
-//            mSocket.emit("from-android", "request-speed");
+
 //            mSocket.on("get-speed", speedData);
             customHandler.postDelayed(this, 1000);
         }
     };
 
 
-    private void showNotification() {
-        final String channelID = "ChannelID_01";
-        Intent intent=new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID)
-                .setContentIntent(pendingIntent)
-                .setWhen(System.currentTimeMillis())
-                .setContentTitle("Car lost")
-                .setContentText("Find car now !!!!")
-                .setSmallIcon(R.drawable.ic_warning_black_24dp)
-                .setDefaults(Notification.DEFAULT_ALL);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-        Notification notification = builder.build();
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-//        Log.d("NOTIFY", "TRUE1");
-
-        // Get the notification manager & publish the notification
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        assert notificationManager != null;
-        notificationManager.notify(ID_NOTIFICATION_BROADCAST, notification);
-//        Log.d("NOTIFY", "TRUE2");
-    }
 
     private void Connect2Server(){
         try {
@@ -230,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
             NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
             isConnected = (activeNetwork != null) && (activeNetwork.isConnectedOrConnecting());
         }
-
         return isConnected;
     }
 
@@ -238,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void run() {
                     JSONObject object = (JSONObject)args[0];
@@ -251,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                             case "Lost":
                                 viewStatus.setText("Status: Lost");
                                 viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
-                                showNotification();
+                                showNotificationLost();
                                 break;
                             case "Run":
                                 viewStatus.setText("Status: Running");
@@ -302,7 +308,44 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+/*  NOTIFICATION  */
+    private NotificationCompat.Builder buildNormal() {
+        NotificationCompat.Builder b=
+                new NotificationCompat.Builder(this, CHANNEL_WHATEVER);
+
+        b.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentTitle("download completed !")
+                .setContentText("ok download !")
+                .setContentIntent(buildPendingIntent())
+                .setSmallIcon(R.drawable.ic_warning_black_24dp)
+                .setGroup(GROUP_SAMPLE)
+                .setGroupSummary(true);
+
+        return(b);
     }
+
+    private void showNotificationLost() {
+        NotificationCompat.Builder b=
+                new NotificationCompat.Builder(this, CHANNEL_WHATEVER);
+        b.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentTitle("CAR LOST")
+                .setContentText("I'm lost !!!")
+                .setContentIntent(buildPendingIntent())
+                .setSmallIcon(R.drawable.ic_warning_black_24dp)
+                .setGroup(GROUP_SAMPLE);
+        mgrCompat.notify(NOTIFY_ID, b.build());
+    }
+
+    private PendingIntent buildPendingIntent() {
+        Intent i=new Intent(this, MainActivity.class);
+        return(PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+}
+
+
 
 
 
