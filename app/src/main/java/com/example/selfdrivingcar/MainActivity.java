@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showNotification() {
-        final String channelID = "GoalieChannelID";
+        final String channelID = "ChannelID_01";
         Intent intent=new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -200,13 +200,13 @@ public class MainActivity extends AppCompatActivity {
 
         Notification notification = builder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        Log.d("NOTIFY", "TRUE1");
+//        Log.d("NOTIFY", "TRUE1");
 
         // Get the notification manager & publish the notification
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         assert notificationManager != null;
         notificationManager.notify(ID_NOTIFICATION_BROADCAST, notification);
-        Log.d("NOTIFY", "TRUE2");
+//        Log.d("NOTIFY", "TRUE2");
     }
 
     private void Connect2Server(){
