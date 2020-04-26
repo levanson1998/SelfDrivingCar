@@ -10,9 +10,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,11 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Socket mSocket;
     private Handler customHandler = new Handler();
-    NotificationCompat.Builder notification;
-    private  static  final int uniqueID=12345;
-
-
-
+    NotificationCompat.Builder builder;
+    private static final int ID_NOTIFICATION_BROADCAST = 607;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +63,14 @@ public class MainActivity extends AppCompatActivity {
         viewStatus.setTextColor(Color.rgb(255,255,255));
         viewImg.setVisibility(View.INVISIBLE);
         viewTime.setVisibility(View.INVISIBLE);
-        notification=new NotificationCompat.Builder(this);
-        notification.setAutoCancel(true);
+//        notification=new NotificationCompat.Builder(this);
+//        notification.setAutoCancel(true);
 
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(MainActivity.this, "Start Tracking !", Toast.LENGTH_SHORT).show();
-
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context))
                 {
@@ -151,11 +150,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
                     viewStatus.setText("Status: Disconnect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
-                    notifier();
+                    showNotification();
                 }
             }
         });
     }
+
     private void AnhXa()
     {
         btnStart = findViewById(R.id.btnstart);
@@ -173,45 +173,41 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             // statusData: [Lost, Stop, Running] - [speed]
             mSocket.on("car-status",statusData);
-            mSocket.emit("from-android", "request-speed");
+//            mSocket.emit("from-android", "request-speed");
 //            mSocket.on("get-speed", speedData);
             customHandler.postDelayed(this, 1000);
         }
     };
 
-    private void notifier(){
+
+    private void showNotification() {
+        final String channelID = "GoalieChannelID";
         Intent intent=new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent=PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        notification.setSmallIcon(R.drawable.ic_warning_black_24dp);
-        notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("Self Driving Car Lost");
-        notification.setContentText("OMG I'm lost. Please find me!!!");
-        notification.setCategory(NotificationCompat.CATEGORY_MESSAGE);
-        notification.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        notification.setContentIntent(pendingIntent);
-        notification.setDefaults(Notification.DEFAULT_ALL);
-        NotificationManager nm= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(uniqueID,notification.build());
-    }
-/*
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID)
+                .setContentIntent(pendingIntent)
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle("Car lost")
+                .setContentText("Find car now !!!!")
+                .setSmallIcon(R.drawable.ic_warning_black_24dp)
+                .setDefaults(Notification.DEFAULT_ALL);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        Notification notification = builder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        Log.d("NOTIFY", "TRUE1");
+
+        // Get the notification manager & publish the notification
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        assert notificationManager != null;
+        notificationManager.notify(ID_NOTIFICATION_BROADCAST, notification);
+        Log.d("NOTIFY", "TRUE2");
     }
-*/
 
     private void Connect2Server(){
         try {
@@ -255,13 +251,13 @@ public class MainActivity extends AppCompatActivity {
                             case "Lost":
                                 viewStatus.setText("Status: Lost");
                                 viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
-                                notifier();
+                                showNotification();
                                 break;
                             case "Run":
                                 viewStatus.setText("Status: Running");
                                 viewStatus.setBackgroundColor(Color.rgb(0, 200, 0));
                                 break;
-                            case"Stop":
+                            case "Stop":
                                 viewStatus.setText("Status: Stopping");
                                 viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                                 viewImg.setVisibility(View.INVISIBLE);
@@ -301,7 +297,6 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             });
         }
