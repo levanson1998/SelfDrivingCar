@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         /* init */
         AnhXa();
+        Connect2Server();
 
         /*START NOTIFY INIT*/
         NotificationManager mgr=
@@ -98,16 +99,16 @@ public class MainActivity extends AppCompatActivity {
         public void run(){
             Log.d("test", "thread1");
             // statusData: [Lost, Stop, Running] - [speed]
-            Connect2Server();
-                mSocket.emit("requestStatus", true);
-//            mSocket.on("car-status",statusData);
+
+//            mSocket.emit("requestStatus", true);
+            mSocket.on("car-status",statusData);
             mSocket.on("car-disconnect", disconnectData);
 
 //            mSocket.on("get-speed", speedData);
             customHandler.postDelayed(this, 5000);
         }
     };
-//    thread.start();
+    thread.start();
 
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -118,10 +119,11 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnectedToNetwork(context))
                 {
                     Log.d("test", "startClick");
-                    Connect2Server();
+//                    Connect2Server();
                     mSocket.emit("from-android","start");
                     viewStatus.setText("Status: Starting !");
                     viewStatus.setBackgroundColor(Color.rgb(0,200,0));
+                    Log.d("test", "btnStart");
                 }
                 else
                 {
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 // socketio send to server
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
-                    Connect2Server();
+//                    Connect2Server();
 //                    JSONObject obj = new JSONObject();
 //                    obj.put("request","stop");
                     mSocket.emit("from-android", "stop");
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                     viewImg.setVisibility(View.INVISIBLE);
                     viewTime.setVisibility(View.INVISIBLE);
+                    Log.d("test", "btnStop");
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
@@ -164,14 +167,16 @@ public class MainActivity extends AppCompatActivity {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
                     if(setSpeed.isChecked()) {
-                        Connect2Server();
+//                        Connect2Server();
                         mSocket.emit("from-android", "speed_fast");
                         Toast.makeText(MainActivity.this, "SPEED IS FAST", Toast.LENGTH_SHORT).show();
+                        Log.d("test", "btnFast");
                     }
                     else {
-                        Connect2Server();
+//                        Connect2Server();
                         mSocket.emit("from-android", "speed_slow");
                         Toast.makeText(MainActivity.this, "SPEED IS SLOW", Toast.LENGTH_SHORT).show();
+                        Log.d("test", "btnSlow");
                     }
                 }
                 else {
@@ -189,9 +194,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Context context= view.getContext();
                 if (isConnectedToNetwork((context))){
-                    Connect2Server();
+//                    Connect2Server();
                     mSocket.emit("from-android", "getpic");
                     mSocket.on("send-img", imgData);
+                    Log.d("test", "btnPic");
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
@@ -284,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void run() {
+                    Log.d("test", "getstt1");
                     JSONObject object = (JSONObject)args[0];
                     String statusCar;
                     String speed;
