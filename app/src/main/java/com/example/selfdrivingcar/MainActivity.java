@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView viewImg;
     ToggleButton setSpeed;
 //    String url_heroku = "https://seft-drivingcar.herokuapp.com/";
-//    String url_heroku = "http://localhost:8888/";
+//    String url_heroku = "http://localhost:3000/";
     String url_heroku = "https://supercuteboy.herokuapp.com/";
 
     private Socket mSocket;
@@ -94,6 +94,20 @@ public class MainActivity extends AppCompatActivity {
         viewImg.setVisibility(View.INVISIBLE);
         viewTime.setVisibility(View.INVISIBLE);
 
+    Thread thread = new Thread(){
+        public void run(){
+            Log.d("test", "thread1");
+            // statusData: [Lost, Stop, Running] - [speed]
+            Connect2Server();
+                mSocket.emit("requestStatus", true);
+//            mSocket.on("car-status",statusData);
+            mSocket.on("car-disconnect", disconnectData);
+
+//            mSocket.on("get-speed", speedData);
+            customHandler.postDelayed(this, 5000);
+        }
+    };
+//    thread.start();
 
         /*----WHEN PUSH BUTTON START/STOP ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context))
                 {
+                    Log.d("test", "startClick");
                     Connect2Server();
                     mSocket.emit("from-android","start");
                     viewStatus.setText("Status: Starting !");
@@ -200,17 +215,40 @@ public class MainActivity extends AppCompatActivity {
         setSpeed = findViewById(R.id.slowfast);
     }
 
-    /*----HANDLER FOR UPDATING----*/
-    private Runnable updateTimerThread = new Runnable() {
-        public void run() {
-            // statusData: [Lost, Stop, Running] - [speed]
-            mSocket.emit("requestStatus");
-            mSocket.on("car-status",statusData);
 
-//            mSocket.on("get-speed", speedData);
-            customHandler.postDelayed(this, 1000);
-        }
-    };
+    /*----HANDLER FOR UPDATING----*/
+//    private Runnable updateTimerThread = new Runnable() {
+//        public void run() {
+//            Log.d("test", "thread1");
+//            // statusData: [Lost, Stop, Running] - [speed]
+//            mSocket.emit("requestStatus");
+//            mSocket.on("car-status",statusData);
+//            mSocket.on("car-disconnect", disconnectData);
+//
+////            mSocket.on("get-speed", speedData);
+//            customHandler.postDelayed(this, 1000);
+//        }
+//    };
+
+//    Thread thread = new Thread(){
+//        public void run(){
+//            System.out.println("Thread Running");
+//        }
+//    };
+
+
+
+/*
+    public static void main(String[] args) {
+        Thread MessageThread2 = new Thread(new Runnable(){
+            public void run(){
+                System.out.println("helllo2");
+            }
+        });
+        MessageThread2.start();
+    }
+*/
+
 
 
 
@@ -308,6 +346,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private  Emitter.Listener disconnectData = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    viewStatus.setText("Car disconnect !");
+                }
+            });
+        }
+    };
 /*  NOTIFICATION  */
     private NotificationCompat.Builder buildNormal() {
         NotificationCompat.Builder b=
