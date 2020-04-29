@@ -1,0 +1,17 @@
+	RASPBERRY ---> ANDROID		DISPLAY
+status: lost		Lost		Lost !	
+	stop		Stopping	Stopping !
+	run		Running		Running !
+	speed				12344
+
+	ANDROID ------> RASPBERRY
+	stop		stop		Stop
+	start				Start
+	fast				
+	slow
+	getpic
+
+	SERVER --------------> ANDROID
+	android --> server ----> raspberry
+			   ---x--> raspberry => server ----> android(car disconnect !)
+	car-disconnect			Car disconnect !

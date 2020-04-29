@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     NotificationCompat.Builder builder;
     private static final int ID_NOTIFICATION_BROADCAST = 607;
     private final String channelID = "ChannelID_01";
+    private boolean onetime = true;
 
 
     // notify
@@ -76,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         /* init */
         AnhXa();
-        Connect2Server();
+        if(onetime==true){
+            onetime=false;
+            Connect2Server();
+        }
+
+        mSocket.emit("android-connect", true);
 
         /*START NOTIFY INIT*/
         NotificationManager mgr=
@@ -86,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             mgr.createNotificationChannel(new NotificationChannel(CHANNEL_WHATEVER,
                     "Whatever", NotificationManager.IMPORTANCE_DEFAULT));
         }
+
 
         mgrCompat=NotificationManagerCompat.from(this);
         /*END NOTIFY */
@@ -99,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         public void run(){
             Log.d("test", "thread1");
             // statusData: [Lost, Stop, Running] - [speed]
-
 //            mSocket.emit("requestStatus", true);
             mSocket.on("car-status",statusData);
             mSocket.on("car-disconnect", disconnectData);
@@ -119,16 +125,21 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnectedToNetwork(context))
                 {
                     Log.d("test", "startClick");
-//                    Connect2Server();
+                    if(onetime==true) {
+                        onetime=false;
+                        Connect2Server();
+                    }
+                    mSocket.emit("android-connect", true);
+
                     mSocket.emit("from-android","start");
-                    viewStatus.setText("Status: Starting !");
+                    viewStatus.setText("Status: Start");
                     viewStatus.setBackgroundColor(Color.rgb(0,200,0));
                     Log.d("test", "btnStart");
                 }
                 else
                 {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setText("Status: Not connect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
             }
@@ -146,15 +157,18 @@ public class MainActivity extends AppCompatActivity {
 //                    JSONObject obj = new JSONObject();
 //                    obj.put("request","stop");
                     mSocket.emit("from-android", "stop");
-                    viewStatus.setText("Status: Stopping !");
+                    viewStatus.setText("Status: Stop");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                     viewImg.setVisibility(View.INVISIBLE);
                     viewTime.setVisibility(View.INVISIBLE);
+                    mSocket.disconnect();
+                    onetime=true;
                     Log.d("test", "btnStop");
                 }
                 else {
+
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setText("Status: Not connect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
                 }
@@ -181,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setText("Status: Not connect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                 }
             }
@@ -201,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
-                    viewStatus.setText("Status: Disconnect !");
+                    viewStatus.setText("Status: Not connect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
                     showNotificationLost();
                 }
@@ -263,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             mSocket = IO.socket(url_heroku);
             mSocket.connect();
+            Log.d("test", "socket connect");
 //            Toast.makeText(this, "Connected to Server!", Toast.LENGTH_SHORT).show();
         } catch (URISyntaxException e) {
             Toast.makeText(this, "Server fails to start...", Toast.LENGTH_SHORT).show();
@@ -300,16 +315,16 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (statusCar){
                             case "Lost":
-                                viewStatus.setText("Status: Lost");
+                                viewStatus.setText("Status: Lost !");
                                 viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
                                 showNotificationLost();
                                 break;
                             case "Run":
-                                viewStatus.setText("Status: Running");
+                                viewStatus.setText("Status: Running !");
                                 viewStatus.setBackgroundColor(Color.rgb(0, 200, 0));
                                 break;
                             case "Stop":
-                                viewStatus.setText("Status: Stopping");
+                                viewStatus.setText("Status: Stopping !");
                                 viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                                 viewImg.setVisibility(View.INVISIBLE);
                                 viewTime.setVisibility(View.INVISIBLE);
@@ -336,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         img_text = object.getString("Image");
                         captime=object.getString("CapTime");
-                        viewTime.setText("Captured Time: " +captime);
+                        viewTime.setText(captime);
                         String encodedString=img_text.substring(img_text.indexOf(",")+1,img_text.length());
                         byte[] decodedString = Base64.decode(encodedString, Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -398,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
         Intent i=new Intent(this, MainActivity.class);
         return(PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT));
     }
-
 }
 
 
