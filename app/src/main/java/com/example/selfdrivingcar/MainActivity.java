@@ -77,12 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         /* init */
         AnhXa();
-        if(onetime==true){
-            onetime=false;
-            Connect2Server();
-        }
-
-        mSocket.emit("android-connect", true);
+        Connect2Server();
 
         /*START NOTIFY INIT*/
         NotificationManager mgr=
@@ -125,11 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnectedToNetwork(context))
                 {
                     Log.d("test", "startClick");
-                    if(onetime==true) {
-                        onetime=false;
-                        Connect2Server();
-                    }
-                    mSocket.emit("android-connect", true);
+
+                    Connect2Server();
 
                     mSocket.emit("from-android","start");
                     viewStatus.setText("Status: Start");
@@ -275,9 +267,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void Connect2Server(){
         try {
-            mSocket = IO.socket(url_heroku);
-            mSocket.connect();
-            Log.d("test", "socket connect");
+            if(onetime==true) {
+                onetime=false;
+                mSocket = IO.socket(url_heroku);
+                mSocket.connect();
+                mSocket.emit("android-connect", true);
+                Log.d("test", "socket connect");
+            }
+            else{
+                Log.d("test", " don't connect2server");
+            }
 //            Toast.makeText(this, "Connected to Server!", Toast.LENGTH_SHORT).show();
         } catch (URISyntaxException e) {
             Toast.makeText(this, "Server fails to start...", Toast.LENGTH_SHORT).show();
