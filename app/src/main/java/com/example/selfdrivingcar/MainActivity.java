@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private final String channelID = "ChannelID_01";
     private boolean onetime = true;
 
-
     /*--- NOTIFICATION ---*/
     private static final String CHANNEL_WHATEVER="channel_whatever";
     private static final int NOTIFY_ID=1337;
