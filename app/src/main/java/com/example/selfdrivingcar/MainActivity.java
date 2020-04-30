@@ -44,8 +44,6 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-//import java.net.Socket;
-
 public class MainActivity extends AppCompatActivity {
 
     TextView viewSpeed, viewStatus, viewTime;
@@ -53,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
     Switch swSpeed;
     ImageView viewImg;
     ToggleButton setSpeed;
-//    String url_heroku = "https://seft-drivingcar.herokuapp.com/";
-//    String url_heroku = "http://localhost:3000/";
-    String url_heroku = "https://supercuteboy.herokuapp.com/";
+    String url_heroku = "https://seft-drivingcar.herokuapp.com/";
 
     private Socket mSocket;
     private Handler customHandler = new Handler();
@@ -65,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean onetime = true;
 
 
-    // notify
+    /*--- NOTIFICATION ---*/
     private static final String CHANNEL_WHATEVER="channel_whatever";
     private static final int NOTIFY_ID=1337;
     private static final String GROUP_SAMPLE="sampleGroup";
@@ -75,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /* init */
+        /* INIT */
         AnhXa();
         Connect2Server();
 
@@ -92,26 +88,24 @@ public class MainActivity extends AppCompatActivity {
         mgrCompat=NotificationManagerCompat.from(this);
         /*END NOTIFY */
 
+        /*--- setVisibility ---*/
         viewStatus.setText("Status: ______");
         viewStatus.setTextColor(Color.rgb(255,255,255));
         viewImg.setVisibility(View.INVISIBLE);
         viewTime.setVisibility(View.INVISIBLE);
 
+        /* --- THREAD --- */
     Thread thread = new Thread(){
         public void run(){
-            Log.d("test", "thread1");
-            // statusData: [Lost, Stop, Running] - [speed]
-//            mSocket.emit("requestStatus", true);
             mSocket.on("car-status",statusData);
             mSocket.on("car-disconnect", disconnectData);
 
-//            mSocket.on("get-speed", speedData);
             customHandler.postDelayed(this, 5000);
         }
     };
     thread.start();
 
-        /*----WHEN PUSH BUTTON START/STOP ----*/
+        /*----WHEN PUSH BUTTON START ----*/
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,17 +131,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*----WHEN PUSH BUTTON STOP ----*/
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(MainActivity.this, "Stop Tracking !", Toast.LENGTH_SHORT).show();
-
-                // socketio send to server
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
-//                    Connect2Server();
-//                    JSONObject obj = new JSONObject();
-//                    obj.put("request","stop");
                     mSocket.emit("from-android", "stop");
                     viewStatus.setText("Status: Stop");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
@@ -155,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     viewTime.setVisibility(View.INVISIBLE);
                     mSocket.disconnect();
                     onetime=true;
-                    Log.d("test", "btnStop");
                 }
                 else {
 
@@ -166,23 +154,19 @@ public class MainActivity extends AppCompatActivity {
                 }
         });
 
-        /*----WHEN PUSH ToggleButton SLOW-FAST----*/
+        /*----WHEN PUSH ToggleButton SLOW/FAST----*/
         setSpeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
                     if(setSpeed.isChecked()) {
-//                        Connect2Server();
                         mSocket.emit("from-android", "speed_fast");
                         Toast.makeText(MainActivity.this, "SPEED IS FAST", Toast.LENGTH_SHORT).show();
-                        Log.d("test", "btnFast");
                     }
                     else {
-//                        Connect2Server();
                         mSocket.emit("from-android", "speed_slow");
                         Toast.makeText(MainActivity.this, "SPEED IS SLOW", Toast.LENGTH_SHORT).show();
-                        Log.d("test", "btnSlow");
                     }
                 }
                 else {
@@ -193,23 +177,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*WHEN PUSH GET PIC BUTTON*/
+        /*--- WHEN PUSH GET PIC BUTTON ---*/
         btnPic.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
                 Context context= view.getContext();
                 if (isConnectedToNetwork((context))){
-//                    Connect2Server();
                     mSocket.emit("from-android", "getpic");
                     mSocket.on("send-img", imgData);
-                    Log.d("test", "btnPic");
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
                     viewStatus.setText("Status: Not connect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
-                    showNotificationLost();
                 }
             }
         });
@@ -228,43 +209,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /*----HANDLER FOR UPDATING----*/
-//    private Runnable updateTimerThread = new Runnable() {
-//        public void run() {
-//            Log.d("test", "thread1");
-//            // statusData: [Lost, Stop, Running] - [speed]
-//            mSocket.emit("requestStatus");
-//            mSocket.on("car-status",statusData);
-//            mSocket.on("car-disconnect", disconnectData);
-//
-////            mSocket.on("get-speed", speedData);
-//            customHandler.postDelayed(this, 1000);
-//        }
-//    };
-
-//    Thread thread = new Thread(){
-//        public void run(){
-//            System.out.println("Thread Running");
-//        }
-//    };
-
-
-
-/*
-    public static void main(String[] args) {
-        Thread MessageThread2 = new Thread(new Runnable(){
-            public void run(){
-                System.out.println("helllo2");
-            }
-        });
-        MessageThread2.start();
-    }
-*/
-
-
-
-
-
     private void Connect2Server(){
         try {
             if(onetime==true) {
@@ -272,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
                 mSocket = IO.socket(url_heroku);
                 mSocket.connect();
                 mSocket.emit("android-connect", true);
-                Log.d("test", "socket connect");
             }
             else{
                 Log.d("test", " don't connect2server");
@@ -284,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*----CHECK NETWORK CONNECTION----*/
+    /*---- CHECK NETWORK CONNECTION ----*/
     public static boolean isConnectedToNetwork(Context context) {
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -304,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void run() {
-                    Log.d("test", "getstt1");
                     JSONObject object = (JSONObject)args[0];
                     String statusCar;
                     String speed;
@@ -358,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
 
                         viewImg.setVisibility(View.VISIBLE);
                         viewTime.setVisibility(View.VISIBLE);
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
