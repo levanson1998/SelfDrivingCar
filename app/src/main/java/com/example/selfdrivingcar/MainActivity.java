@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     Switch swSpeed;
     ImageView viewImg;
     ToggleButton setSpeed;
-    String url_heroku = "https://seft-drivingcar.herokuapp.com/";
+    String url_heroku = "https://ha-drivingcar.herokuapp.com/";
 
     private Socket mSocket;
     private Handler customHandler = new Handler();
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private final String channelID = "ChannelID_01";
     private boolean onetime = true;
 
-    /*--- NOTIFICATION ---*/
+    /*--- NOTIFICATION --*/
     private static final String CHANNEL_WHATEVER="channel_whatever";
     private static final int NOTIFY_ID=1337;
     private static final String GROUP_SAMPLE="sampleGroup";
@@ -246,14 +246,18 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     JSONObject object = (JSONObject)args[0];
                     String statusCar;
+                    Integer ReStop;
                     String speed;
                     String img_text, captime;
                     try{
                         // {"status":"lost", "speed":"123"}
                         statusCar =object.getString("status");
+                        ReStop = object.getInt("ReStop");
                         speed = object.getString("speed");
                         img_text = object.getString("Image");
                         captime = object.getString("CapTime");
+
+
 
                         switch (statusCar){
                             case "Lost":
@@ -273,11 +277,23 @@ public class MainActivity extends AppCompatActivity {
                             case "Run":
                                 viewStatus.setText("Status: Running !");
                                 viewStatus.setBackgroundColor(Color.rgb(0, 200, 0));
-                                viewImg.setVisibility(View.INVISIBLE);
-                                viewTime.setVisibility(View.INVISIBLE);
+//                                viewImg.setVisibility(View.INVISIBLE);
+//                                viewTime.setVisibility(View.INVISIBLE);
                                 break;
                             case "Stop":
-                                viewStatus.setText("Status: Stopping !");
+                                Log.d("ReS", "value: "+Integer.toString(ReStop));
+                                // vat can
+                                if(ReStop==1){
+                                    viewStatus.setText("Have Obstacle!");
+                                }
+                                // bien bao
+                                else if(ReStop==2){
+                                    viewStatus.setText("Signal Stop!");
+                                }
+                                else{
+                                    viewStatus.setText("Status: Stopping !");
+                                }
+                                // viewStatus.setText("Status: Stopping !");
                                 viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
                                 viewTime.setText(captime);
                                 String encodedString1=img_text.substring(img_text.indexOf(",")+1,img_text.length());
