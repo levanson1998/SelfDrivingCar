@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                     "Whatever", NotificationManager.IMPORTANCE_DEFAULT));
         }
 
-
         mgrCompat=NotificationManagerCompat.from(this);
         /*END NOTIFY */
 
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     onetime=true;
                 }
                 else {
-
                     Toast.makeText(MainActivity.this, "Please check network connection !", Toast.LENGTH_SHORT).show();
                     viewStatus.setText("Status: Not connect !");
                     viewStatus.setBackgroundColor(Color.rgb(255, 193, 7));
@@ -207,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         setSpeed = findViewById(R.id.slowfast);
     }
 
-
+// onetime:true: not connect, false: connected
     private void Connect2Server(){
         try {
             if(onetime==true) {
@@ -249,25 +247,46 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject object = (JSONObject)args[0];
                     String statusCar;
                     String speed;
+                    String img_text, captime;
                     try{
+                        // {"status":"lost", "speed":"123"}
                         statusCar =object.getString("status");
                         speed = object.getString("speed");
+                        img_text = object.getString("Image");
+                        captime = object.getString("CapTime");
 
                         switch (statusCar){
                             case "Lost":
                                 viewStatus.setText("Status: Lost !");
                                 viewStatus.setBackgroundColor(Color.rgb(241, 191, 41));
+                                viewTime.setText(captime);
+                                String encodedString=img_text.substring(img_text.indexOf(",")+1,img_text.length());
+                                byte[] decodedString = Base64.decode(encodedString, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                viewImg.setImageBitmap(decodedByte);
+
+                                viewImg.setVisibility(View.VISIBLE);
+                                viewTime.setVisibility(View.VISIBLE);
+
                                 showNotificationLost();
                                 break;
                             case "Run":
                                 viewStatus.setText("Status: Running !");
                                 viewStatus.setBackgroundColor(Color.rgb(0, 200, 0));
+                                viewImg.setVisibility(View.INVISIBLE);
+                                viewTime.setVisibility(View.INVISIBLE);
                                 break;
                             case "Stop":
                                 viewStatus.setText("Status: Stopping !");
                                 viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
-                                viewImg.setVisibility(View.INVISIBLE);
-                                viewTime.setVisibility(View.INVISIBLE);
+                                viewTime.setText(captime);
+                                String encodedString1=img_text.substring(img_text.indexOf(",")+1,img_text.length());
+                                byte[] decodedString1 = Base64.decode(encodedString1, Base64.DEFAULT);
+                                Bitmap decodedByte1 = BitmapFactory.decodeByteArray(decodedString1, 0, decodedString1.length);
+                                viewImg.setImageBitmap(decodedByte1);
+                                viewImg.setVisibility(View.VISIBLE);
+                                viewTime.setVisibility(View.VISIBLE);
+
                                 break;
                         }
                         viewSpeed.setText("Speed: "+speed);
