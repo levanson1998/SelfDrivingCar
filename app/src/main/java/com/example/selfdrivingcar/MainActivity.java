@@ -175,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /*--- WHEN PUSH GET PIC BUTTON ---*/
-        btnPic.setOnClickListener(new View.OnClickListener() {
+        btnPic.setOnClickListener(new View.OnClickListener
+                () {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
