@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
     TextView viewSpeed, viewStatus, viewTime;
     Button btnStart, btnStop, btnPic;
-    Switch swSpeed;
     ImageView viewImg;
     ToggleButton setSpeed;
-    String url_heroku = "https://ha-drivingcar.herokuapp.com/";
+//    String url_heroku = "https://ha-drivingcar.herokuapp.com/";
+    String url_heroku = "https://supercuteboy.herokuapp.com/";
 
     private Socket mSocket;
     private Handler customHandler = new Handler();
@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
                     Connect2Server();
 
                     mSocket.emit("from-android","start");
+                    setSpeed.setChecked(false);
+                    mSocket.emit("from-android", "speed_slow");
+                    // setSpeed.setChecked(true);
                     viewStatus.setText("Status: Start");
                     viewStatus.setBackgroundColor(Color.rgb(0,200,0));
                     Log.d("test", "btnStart");
@@ -135,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Context context=view.getContext();
                 if (isConnectedToNetwork(context)) {
+                    setSpeed.setChecked(false);
+                    mSocket.emit("from-android", "speed_slow");
                     mSocket.emit("from-android", "stop");
                     viewStatus.setText("Status: Stop");
                     viewStatus.setBackgroundColor(Color.rgb(200, 0, 0));
