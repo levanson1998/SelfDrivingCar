@@ -14,4 +14,9 @@
     <string name="slow">SLOW</string>
     <string name="fast">FAST</string>
     <string name="togglebutton">ToggleButton</string>
+    <string name="nameLogin">Name</string>
+<!--    <string name="nameLogin">Name</string>-->
+    <string name="passwordLogin">Password</string>
+    <string name="buttonLogin">Button</string>
+    <string name="textview">TextView</string>
 </resources>
