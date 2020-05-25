@@ -2,6 +2,7 @@ package com.example.selfdrivingcar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void validate(String userName, String userPassword) {
-        if ((userName == "Ha Xinh Dep") && (userPassword == "1234")) {
+        if ((userName.equals("Ha Dep Trai")) && (userPassword.equals("hahaha"))) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         } else {
