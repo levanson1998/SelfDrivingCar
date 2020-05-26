@@ -5,19 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#8BC34A"
-    tools:context=".Security_Activity">
+    tools:context=".LoginActivity">
 
     <EditText
         android:id="@+id/etName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/nameLogin"
         android:inputType="textPersonName"
         android:lineSpacingExtra="14sp"
-        android:text="@string/nameLogin"
         android:textColorHint="#131312"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,8 +30,12 @@
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="480dp"
         android:autofillHints=""
         android:ems="10"
@@ -62,8 +69,9 @@
 
     <TextView
         android:id="@+id/tvInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="387dp"
+        android:layout_height="35dp"
+        android:gravity="center"
         android:text="@string/textview"
         android:textColor="#121010"
         android:textColorHint="#BC4722"
